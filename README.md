@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dainer Web · Páginas web para negocios</title>
+<meta name="description" content="Páginas web para emprendedores: menú o catálogo, pedidos y citas por WhatsApp, adaptadas al celular.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { colors: { primary:'#E67E22', secondary:'#2C3E50' }, fontFamily: { sans:['Inter','system-ui','sans-serif'], display:['Montserrat','sans-serif'] } } } }
+</script>
+<style>
+html { scroll-behavior:smooth; }
+body { font-family:'Inter',sans-serif; }
+section[id] { scroll-margin-top:64px; }
+.phone { width:214px; height:430px; border-radius:30px; border:7px solid #1f2937; background:#fff; overflow:hidden; position:relative; box-shadow:0 20px 40px rgba(0,0,0,.18); }
+.phone iframe { width:390px; height:780px; border:0; transform:scale(.5); transform-origin:0 0; pointer-events:none; background:#fff; }
+.card-hover { transition:transform .25s ease, box-shadow .25s ease; }
+.card-hover:hover { transform:translateY(-4px); box-shadow:0 14px 28px rgba(0,0,0,.08); }
+button:focus-visible, a:focus-visible { outline:2px solid #E67E22; outline-offset:2px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } .card-hover { transition:none; } }
+</style>
+</head>
+<body class="bg-gray-50 text-secondary">
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="#inicio" class="font-display font-extrabold text-lg text-primary" data-brand>DAINER WEB</a>
+    <nav aria-label="Principal" class="flex items-center gap-4 text-sm">
+      <a href="#trabajos" class="hidden sm:inline hover:text-primary">Trabajos</a>
+      <a href="#paquetes" class="hidden sm:inline hover:text-primary">Paquetes</a>
+      <a href="#proceso" class="hidden sm:inline hover:text-primary">Proceso</a>
+      <a data-wa href="#" target="_blank" rel="noopener" class="bg-primary text-white font-semibold px-4 py-2 rounded-full">Cotizar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="inicio" class="bg-gradient-to-br from-orange-50 via-white to-orange-50">
+    <div class="max-w-5xl mx-auto px-4 py-16 sm:py-24 text-center">
+      <p class="text-primary font-semibold tracking-widest text-xs mb-3">PÁGINAS WEB PARA EMPRENDEDORES</p>
+      <h1 class="font-display font-extrabold text-4xl sm:text-6xl leading-tight">Tu negocio en línea,<br>listo para recibir pedidos</h1>
+      <p class="text-gray-600 max-w-xl mx-auto mt-5">Menú o catálogo, carrito, citas y pedidos directo a tu WhatsApp. Todo adaptado al celular, con tu logo y tus colores.</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="#trabajos" class="bg-primary text-white font-semibold px-8 py-3 rounded-full shadow">Ver ejemplos</a>
+        <a data-wa href="#" target="_blank" rel="noopener" class="bg-white border border-primary text-primary font-semibold px-8 py-3 rounded-full"><i class="fa fa-whatsapp" aria-hidden="true"></i> Escríbeme</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRABAJOS -->
+  <section id="trabajos" class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="font-display font-bold text-3xl mb-2">Trabajos de ejemplo</h2>
+    <p class="text-gray-500 mb-2">Tres demos para negocios distintos. Ábrelas en tu celular y pruébalas como lo haría tu cliente.</p>
+    <p class="text-xs text-gray-400 mb-10">Son páginas de demostración con negocios y datos ficticios.</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <article class="card-hover bg-white rounded-3xl p-6 border flex flex-col items-center text-center">
+        <div class="phone" aria-hidden="true"><iframe src="delicias-moro.html" title="Vista previa Delicias Moro" loading="lazy" tabindex="-1"></iframe></div>
+        <h3 class="font-bold text-lg mt-6">Delicias Moro</h3>
+        <p class="text-xs text-primary font-semibold mb-2">COMIDA RÁPIDA · PEDIDOS</p>
+        <p class="text-sm text-gray-500">Menú con extras, carrito, domicilio gratis por monto, seguimiento del pedido y panel de administración.</p>
+        <a href="delicias-moro.html" target="_blank" rel="noopener" class="mt-5 bg-primary text-white font-semibold px-6 py-2 rounded-full text-sm">Ver demo</a>
+      </article>
+
+      <article class="card-hover bg-white rounded-3xl p-6 border flex flex-col items-center text-center">
+        <div class="phone" aria-hidden="true"><iframe src="demo-barberia.html" title="Vista previa Barbería Don Filo" loading="lazy" tabindex="-1"></iframe></div>
+        <h3 class="font-bold text-lg mt-6">Barbería Don Filo</h3>
+        <p class="text-xs text-primary font-semibold mb-2">SERVICIOS · CITAS</p>
+        <p class="text-sm text-gray-500">Servicios con precios, horarios, ubicación y reserva de citas con confirmación por WhatsApp.</p>
+        <a href="demo-barberia.html" target="_blank" rel="noopener" class="mt-5 bg-primary text-white font-semibold px-6 py-2 rounded-full text-sm">Ver demo</a>
+      </article>
+
+      <article class="card-hover bg-white rounded-3xl p-6 border flex flex-col items-center text-center">
+        <div class="phone" aria-hidden="true"><iframe src="demo-ropa.html" title="Vista previa Moda Luna" loading="lazy" tabindex="-1"></iframe></div>
+        <h3 class="font-bold text-lg mt-6">Moda Luna</h3>
+        <p class="text-xs text-primary font-semibold mb-2">TIENDA DE ROPA · CATÁLOGO</p>
+        <p class="text-sm text-gray-500">Catálogo por categorías, selección de talla, carrito y pedido completo enviado por WhatsApp.</p>
+        <a href="demo-ropa.html" target="_blank" rel="noopener" class="mt-5 bg-primary text-white font-semibold px-6 py-2 rounded-full text-sm">Ver demo</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- QUÉ INCLUYE -->
+  <section class="bg-white border-y">
+    <div class="max-w-5xl mx-auto px-4 py-14">
+      <h2 class="font-display font-bold text-3xl mb-8 text-center">Lo que incluye tu página</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
+        <div><i class="fa fa-mobile text-primary text-3xl mb-2" aria-hidden="true"></i><p class="font-semibold">Hecha para celular</p><p class="text-gray-500">Se ve bien en cualquier pantalla</p></div>
+        <div><i class="fa fa-whatsapp text-primary text-3xl mb-2" aria-hidden="true"></i><p class="font-semibold">Pedidos por WhatsApp</p><p class="text-gray-500">Te llegan listos y completos</p></div>
+        <div><i class="fa fa-paint-brush text-primary text-3xl mb-2" aria-hidden="true"></i><p class="font-semibold">Tu marca</p><p class="text-gray-500">Logo, colores y fotos propias</p></div>
+        <div><i class="fa fa-map-marker text-primary text-3xl mb-2" aria-hidden="true"></i><p class="font-semibold">Horarios y mapa</p><p class="text-gray-500">Para que te encuentren fácil</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAQUETES -->
+  <section id="paquetes" class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="font-display font-bold text-3xl mb-2 text-center">Paquetes</h2>
+    <p class="text-gray-500 mb-10 text-center">Elige el que se ajuste a tu negocio. Dominio y hosting se cotizan aparte.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-6 border card-hover">
+        <h3 class="font-bold text-xl">Básico</h3>
+        <p class="text-gray-500 text-sm">Presencia y catálogo</p>
+        <p class="mt-4"><span class="text-xs text-gray-400">Desde</span> <span class="font-display font-extrabold text-3xl text-primary" data-precio="basico">$ 150.000</span></p>
+        <ul class="mt-4 space-y-2 text-sm text-gray-600">
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Diseño con tu marca</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Catálogo o servicios</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Botón de WhatsApp</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Mapa y horarios</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>2 rondas de cambios</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border-2 border-primary relative card-hover">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-bold px-3 py-1 rounded-full">MÁS ELEGIDO</span>
+        <h3 class="font-bold text-xl">Pedidos</h3>
+        <p class="text-gray-500 text-sm">Carrito y pedido por WhatsApp</p>
+        <p class="mt-4"><span class="text-xs text-gray-400">Desde</span> <span class="font-display font-extrabold text-3xl text-primary" data-precio="pedidos">$ 300.000</span></p>
+        <ul class="mt-4 space-y-2 text-sm text-gray-600">
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Todo lo del Básico</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Carrito con cantidades</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Pedido completo por WhatsApp</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Promociones y domicilio por monto</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Panel básico de productos</li>
+        </ul>
+      </div>
+      <div class="bg-white rounded-2xl p-6 border card-hover">
+        <h3 class="font-bold text-xl">Completo</h3>
+        <p class="text-gray-500 text-sm">Gestión de pedidos</p>
+        <p class="mt-4"><span class="font-display font-extrabold text-2xl text-primary">Cotiza conmigo</span></p>
+        <ul class="mt-4 space-y-2 text-sm text-gray-600">
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Todo lo del paquete Pedidos</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Pedidos guardados en línea</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Panel de administración</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>Acceso desde varios dispositivos</li>
+          <li><i class="fa fa-check text-primary mr-2" aria-hidden="true"></i>3 rondas de cambios</li>
+        </ul>
+      </div>
+    </div>
+    <p class="text-xs text-gray-400 text-center mt-6">Los precios son de referencia y pueden variar según lo que necesite tu negocio.</p>
+  </section>
+
+  <!-- PROCESO -->
+  <section id="proceso" class="bg-white border-y">
+    <div class="max-w-5xl mx-auto px-4 py-16">
+      <h2 class="font-display font-bold text-3xl mb-10 text-center">Cómo trabajamos</h2>
+      <ol class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <li class="text-center"><div class="w-12 h-12 mx-auto rounded-full bg-primary text-white font-bold flex items-center justify-center mb-3">1</div><h3 class="font-semibold">Conversamos</h3><p class="text-sm text-gray-500 mt-1">Me cuentas de tu negocio y llenas un formulario corto.</p></li>
+        <li class="text-center"><div class="w-12 h-12 mx-auto rounded-full bg-primary text-white font-bold flex items-center justify-center mb-3">2</div><h3 class="font-semibold">Acordamos</h3><p class="text-sm text-gray-500 mt-1">Eliges paquete, plazo y precio. Anticipo del 50%.</p></li>
+        <li class="text-center"><div class="w-12 h-12 mx-auto rounded-full bg-primary text-white font-bold flex items-center justify-center mb-3">3</div><h3 class="font-semibold">Construyo</h3><p class="text-sm text-gray-500 mt-1">Te muestro una primera versión en tu propio celular.</p></li>
+        <li class="text-center"><div class="w-12 h-12 mx-auto rounded-full bg-primary text-white font-bold flex items-center justify-center mb-3">4</div><h3 class="font-semibold">Publico</h3><p class="text-sm text-gray-500 mt-1">Con tu aprobación, queda en línea con tu dominio.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="max-w-3xl mx-auto px-4 py-20 text-center">
+    <h2 class="font-display font-bold text-3xl sm:text-4xl">¿Hacemos la página de tu negocio?</h2>
+    <p class="text-gray-500 mt-3">Cuéntame qué vendes y te respondo con una propuesta.</p>
+    <a data-wa href="#" target="_blank" rel="noopener" class="inline-block mt-8 bg-green-600 text-white font-semibold px-10 py-4 rounded-full shadow-lg"><i class="fa fa-whatsapp mr-1" aria-hidden="true"></i> Escribirme por WhatsApp</a>
+  </section>
+</main>
+
+<footer class="border-t text-center text-xs text-gray-400 py-6 px-4"><span data-brand>DAINER WEB</span> · Los ejemplos son páginas de demostración con datos ficticios</footer>
+
+<script>
+/* ===== CONFIG: pon aquí tus datos ===== */
+const WHATSAPP = '573202318322';       // tu número: código de país + número, sin +
+const MARCA = 'DAINER WEB';       // nombre de tu marca
+const MENSAJE = 'Hola, vi tu portafolio y quiero una página web para mi negocio.';
+const PRECIOS = { basico:'$ 150.000', pedidos:'$ 300.000' };   // ajusta a tu tarifa
+
+document.querySelectorAll('[data-brand]').forEach(e => e.textContent = MARCA);
+document.querySelectorAll('[data-wa]').forEach(a => a.href = `https://wa.me/${WHATSAPP}?text=` + encodeURIComponent(MENSAJE));
+document.querySelectorAll('[data-precio]').forEach(e => { const p = PRECIOS[e.dataset.precio]; if(p) e.textContent = p; });
+</script>
+</body>
+</html>
