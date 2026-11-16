@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barbería Don Filo · Demo</title>
+<meta name="description" content="Demo de página para barbería: servicios, horarios y reserva de citas por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { colors: { gold: '#C9A227', ink: '#0F0F10', panel: '#1A1A1C' }, fontFamily: { sans: ['Inter','system-ui','sans-serif'], display: ['Oswald','sans-serif'] } } } }
+</script>
+<style>
+html { scroll-behavior:smooth; }
+body { font-family:'Inter',sans-serif; }
+section[id] { scroll-margin-top:72px; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline:2px solid #C9A227; outline-offset:2px; }
+.hero-bg { background:radial-gradient(circle at 20% 20%, rgba(201,162,39,.18), transparent 45%), linear-gradient(135deg,#0F0F10 0%,#1d1d20 60%,#0F0F10 100%); }
+.stripe { background:repeating-linear-gradient(45deg,#C9A227 0 10px,#0F0F10 10px 20px,#f5f5f5 20px 30px,#0F0F10 30px 40px); }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+</style>
+</head>
+<body class="bg-ink text-white">
+
+<div class="bg-gold text-ink text-center text-xs font-semibold py-1.5 px-3">PÁGINA DE DEMOSTRACIÓN · Negocio y datos ficticios</div>
+
+<header class="sticky top-0 z-40 bg-ink/90 backdrop-blur border-b border-white/10">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="#inicio" class="font-display text-2xl tracking-wider text-gold">DON FILO</a>
+    <nav aria-label="Principal" class="flex items-center gap-4 text-sm">
+      <a href="#servicios" class="hidden sm:inline hover:text-gold">Servicios</a>
+      <a href="#horarios" class="hidden sm:inline hover:text-gold">Horarios</a>
+      <a href="#reservar" class="bg-gold text-ink font-semibold px-4 py-2 rounded-full">Reservar</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="inicio" class="hero-bg">
+    <div class="max-w-5xl mx-auto px-4 py-20 sm:py-28 text-center">
+      <p class="text-gold font-semibold tracking-[.3em] text-xs mb-4">BARBERÍA CLÁSICA</p>
+      <h1 class="font-display text-5xl sm:text-7xl leading-tight">Corte clásico.<br>Barba impecable.</h1>
+      <p class="text-gray-300 max-w-md mx-auto mt-5">Reserva tu cita en menos de un minuto y llega a la hora. Sin filas, sin esperas.</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="#reservar" class="bg-gold text-ink font-semibold px-8 py-3 rounded-full">Reservar mi cita</a>
+        <a href="#servicios" class="border border-white/30 px-8 py-3 rounded-full hover:border-gold hover:text-gold">Ver servicios</a>
+      </div>
+    </div>
+    <div class="stripe h-2"></div>
+  </section>
+
+  <section id="servicios" class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="font-display text-3xl sm:text-4xl mb-2">Servicios</h2>
+    <p class="text-gray-400 mb-8">Precios claros, sin sorpresas.</p>
+    <div id="servGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+  </section>
+
+  <section class="bg-panel border-y border-white/10">
+    <div class="max-w-5xl mx-auto px-4 py-14 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+      <div><i class="fa fa-clock-o text-gold text-3xl mb-3" aria-hidden="true"></i><h3 class="font-semibold">Citas puntuales</h3><p class="text-sm text-gray-400 mt-1">Tu hora es tu hora. Te atendemos cuando reservas.</p></div>
+      <div><i class="fa fa-star text-gold text-3xl mb-3" aria-hidden="true"></i><h3 class="font-semibold">Productos de calidad</h3><p class="text-sm text-gray-400 mt-1">Ceras, aceites y cremas pensados para tu tipo de cabello.</p></div>
+      <div><i class="fa fa-smile-o text-gold text-3xl mb-3" aria-hidden="true"></i><h3 class="font-semibold">Buen ambiente</h3><p class="text-sm text-gray-400 mt-1">Un lugar cómodo para relajarte mientras te arreglamos.</p></div>
+    </div>
+  </section>
+
+  <section id="reservar" class="max-w-xl mx-auto px-4 py-16">
+    <h2 class="font-display text-3xl sm:text-4xl mb-2">Reserva tu cita</h2>
+    <p class="text-gray-400 mb-6">Llena los datos y te llevamos a WhatsApp para confirmar.</p>
+    <form id="reservaForm" class="bg-panel border border-white/10 rounded-2xl p-5 space-y-4" novalidate>
+      <div><label for="r_nombre" class="block text-sm font-medium mb-1">Tu nombre</label>
+        <input id="r_nombre" autocomplete="name" class="w-full p-3 rounded-lg bg-ink border border-white/15"></div>
+      <div><label for="r_serv" class="block text-sm font-medium mb-1">Servicio</label>
+        <select id="r_serv" class="w-full p-3 rounded-lg bg-ink border border-white/15"></select></div>
+      <div class="grid grid-cols-2 gap-3">
+        <div><label for="r_fecha" class="block text-sm font-medium mb-1">Fecha</label>
+          <input id="r_fecha" type="date" class="w-full p-3 rounded-lg bg-ink border border-white/15"></div>
+        <div><label for="r_hora" class="block text-sm font-medium mb-1">Hora</label>
+          <select id="r_hora" class="w-full p-3 rounded-lg bg-ink border border-white/15"></select></div>
+      </div>
+      <div><label for="r_notas" class="block text-sm font-medium mb-1">Notas (opcional)</label>
+        <textarea id="r_notas" class="w-full p-3 rounded-lg bg-ink border border-white/15 h-20 resize-none" placeholder="Ej: degradado bajo, barba con perfilado"></textarea></div>
+      <p id="r_err" class="text-red-400 text-sm hidden" role="alert"></p>
+      <button class="w-full bg-gold text-ink font-semibold py-3 rounded-full"><i class="fa fa-whatsapp" aria-hidden="true"></i> Confirmar por WhatsApp</button>
+    </form>
+  </section>
+
+  <section id="horarios" class="bg-panel border-t border-white/10">
+    <div class="max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-2 gap-10">
+      <div>
+        <h2 class="font-display text-3xl mb-4">Horarios</h2>
+        <table class="w-full text-sm">
+          <tbody class="divide-y divide-white/10">
+            <tr><td class="py-2">Lunes a viernes</td><td class="py-2 text-right text-gold">9:00 a. m. – 7:00 p. m.</td></tr>
+            <tr><td class="py-2">Sábados</td><td class="py-2 text-right text-gold">9:00 a. m. – 5:00 p. m.</td></tr>
+            <tr><td class="py-2">Domingos y festivos</td><td class="py-2 text-right text-gray-400">Cerrado</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h2 class="font-display text-3xl mb-4">Ubicación</h2>
+        <p class="text-gray-300 text-sm"><i class="fa fa-map-marker text-gold mr-2" aria-hidden="true"></i>Cra. 00 # 00-00, Barrio Ejemplo</p>
+        <p class="text-gray-300 text-sm mt-2"><i class="fa fa-phone text-gold mr-2" aria-hidden="true"></i>+57 300 000 0000</p>
+        <a id="mapLink" href="#" target="_blank" rel="noopener" class="inline-block mt-4 border border-gold text-gold px-5 py-2 rounded-full text-sm hover:bg-gold hover:text-ink">Cómo llegar</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-white/10 text-center text-xs text-gray-500 py-6 px-4">
+  © Barbería Don Filo · Página de demostración con datos ficticios
+</footer>
+
+<a id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp" class="fixed bottom-5 right-5 z-40 w-14 h-14 rounded-full bg-green-500 text-white text-3xl flex items-center justify-center shadow-lg"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+
+<script>
+/* ===== CONFIG: cambia estos datos para cada cliente ===== */
+const WHATSAPP = '573000000000';   // código de país + número, sin +
+const NEGOCIO = 'Barbería Don Filo';
+const DIRECCION = 'Cra. 00 # 00-00, Barrio Ejemplo';
+const SERVICIOS = [
+  { n:'Corte clásico',  d:'Corte a tijera o máquina con acabado a navaja.', min:40, p:20000, i:'fa-scissors' },
+  { n:'Barba',          d:'Perfilado, toalla caliente y aceite.',           min:30, p:12000, i:'fa-user' },
+  { n:'Corte + barba',  d:'El paquete completo con precio especial.',       min:60, p:28000, i:'fa-star' },
+  { n:'Cejas',          d:'Limpieza y perfilado rápido.',                   min:10, p:5000,  i:'fa-eye' },
+  { n:'Tinte',          d:'Cambio de color con productos de calidad.',      min:90, p:35000, i:'fa-paint-brush' },
+  { n:'Corte infantil', d:'Para los pequeños, menores de 12 años.',         min:30, p:15000, i:'fa-child' }
+];
+const HORAS = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+
+const $ = s => document.querySelector(s);
+const fmt = n => '$ ' + Math.round(n).toLocaleString('es-CO');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+$('#servGrid').innerHTML = SERVICIOS.map(s => `
+  <article class="bg-panel border border-white/10 rounded-2xl p-5 flex gap-4 items-start hover:border-gold/60 transition">
+    <div class="w-11 h-11 shrink-0 rounded-full bg-gold/15 text-gold flex items-center justify-center"><i class="fa ${s.i}" aria-hidden="true"></i></div>
+    <div class="flex-1">
+      <div class="flex justify-between gap-3"><h3 class="font-semibold">${esc(s.n)}</h3><span class="text-gold font-bold whitespace-nowrap">${fmt(s.p)}</span></div>
+      <p class="text-sm text-gray-400 mt-1">${esc(s.d)}</p>
+      <p class="text-xs text-gray-500 mt-2"><i class="fa fa-clock-o" aria-hidden="true"></i> ${s.min} min</p>
+    </div>
+  </article>`).join('');
+
+$('#r_serv').innerHTML = SERVICIOS.map((s,i) => `<option value="${i}">${esc(s.n)} — ${fmt(s.p)}</option>`).join('');
+$('#r_hora').innerHTML = HORAS.map(h => `<option>${h}</option>`).join('');
+
+const t = new Date(); const hoy = new Date(t.getTime() - t.getTimezoneOffset()*60000).toISOString().slice(0,10);
+$('#r_fecha').min = hoy; $('#r_fecha').value = hoy;
+
+$('#mapLink').href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(DIRECCION);
+$('#waFloat').href = `https://wa.me/${WHATSAPP}?text=` + encodeURIComponent(`Hola, quiero reservar una cita en ${NEGOCIO}.`);
+
+$('#reservaForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const nombre = $('#r_nombre').value.trim(), fecha = $('#r_fecha').value, hora = $('#r_hora').value;
+  const serv = SERVICIOS[+$('#r_serv').value], notas = $('#r_notas').value.trim();
+  const err = $('#r_err'); err.classList.add('hidden');
+  const fail = m => { err.textContent = m; err.classList.remove('hidden'); };
+  if(!nombre) return fail('Escribe tu nombre.');
+  if(!fecha) return fail('Elige una fecha.');
+  const d = new Date(fecha + 'T00:00:00');
+  if(fecha < hoy) return fail('Elige una fecha de hoy en adelante.');
+  if(d.getDay() === 0) return fail('Los domingos estamos cerrados. Elige otro día.');
+  if(d.getDay() === 6 && hora > '17:00') return fail('Los sábados cerramos a las 5:00 p. m. Elige una hora más temprano.');
+  const fechaLarga = d.toLocaleDateString('es-CO', { weekday:'long', day:'numeric', month:'long' });
+  const msg = [`*Reserva de cita – ${NEGOCIO}*`, `Nombre: ${nombre}`, `Servicio: ${serv.n} (${fmt(serv.p)})`,
+    `Fecha: ${fechaLarga}`, `Hora: ${hora}`, notas ? `Notas: ${notas}` : ''].filter(Boolean).join('\n');
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+});
+</script>
+</body>
+</html>

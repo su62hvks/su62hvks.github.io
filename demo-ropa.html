@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moda Luna · Demo</title>
+<meta name="description" content="Demo de tienda de ropa con catálogo, tallas, carrito y pedido por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { colors: { rose: { 50:'#fff1f2',100:'#ffe4e6',200:'#fecdd3',300:'#fda4af',400:'#fb7185',500:'#e11d48',600:'#be123c' }, ink:'#1f2937' }, fontFamily: { sans: ['Inter','system-ui','sans-serif'], display: ['Playfair Display','serif'] } } } }
+</script>
+<style>
+body { font-family:'Inter',sans-serif; }
+.drawer { transition:transform .3s ease; }
+.card { transition:transform .25s ease, box-shadow .25s ease; }
+.card:hover { transform:translateY(-4px); box-shadow:0 12px 24px rgba(0,0,0,.08); }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible { outline:2px solid #e11d48; outline-offset:2px; }
+@media (prefers-reduced-motion: reduce) { .drawer, .card { transition:none; } }
+</style>
+</head>
+<body class="bg-white text-ink">
+
+<div class="bg-ink text-white text-center text-xs font-semibold py-1.5 px-3">PÁGINA DE DEMOSTRACIÓN · Tienda y productos ficticios</div>
+
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur border-b">
+  <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="#top" class="font-display text-2xl font-bold text-rose-500">Moda Luna</a>
+    <button data-action="open-cart" aria-label="Abrir carrito" class="relative w-10 h-10 rounded-full hover:bg-rose-50">
+      <i class="fa fa-shopping-bag text-lg" aria-hidden="true"></i>
+      <span id="cartCount" class="absolute -top-0.5 -right-0.5 bg-rose-500 text-white text-[11px] font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="bg-gradient-to-br from-rose-100 via-rose-50 to-white">
+    <div class="max-w-5xl mx-auto px-4 py-14 sm:py-20 text-center">
+      <p class="text-rose-500 font-semibold tracking-widest text-xs mb-3">NUEVA COLECCIÓN</p>
+      <h1 class="font-display text-4xl sm:text-6xl font-bold leading-tight">Ropa que va<br>con tu estilo</h1>
+      <p class="text-gray-600 max-w-md mx-auto mt-4">Elige tu talla, arma tu pedido y finalízalo por WhatsApp. Envíos a todo el país.</p>
+      <a href="#catalogo" class="inline-block mt-7 bg-rose-500 text-white font-semibold px-8 py-3 rounded-full">Ver catálogo</a>
+    </div>
+  </section>
+
+  <section id="catalogo" class="max-w-5xl mx-auto px-4 py-12 scroll-mt-16">
+    <div class="flex flex-wrap items-end justify-between gap-3 mb-6">
+      <h2 class="font-display text-3xl font-bold">Catálogo</h2>
+      <div id="catBar" class="flex flex-wrap gap-2"></div>
+    </div>
+    <div id="grid" class="grid grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  </section>
+
+  <section class="bg-rose-50">
+    <div class="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center text-sm">
+      <div><i class="fa fa-truck text-rose-500 text-2xl mb-2" aria-hidden="true"></i><p class="font-semibold">Envío gratis desde $ 150.000</p><p class="text-gray-500">Si no, el envío cuesta $ 8.000</p></div>
+      <div><i class="fa fa-exchange text-rose-500 text-2xl mb-2" aria-hidden="true"></i><p class="font-semibold">Cambios por talla</p><p class="text-gray-500">Dentro de los 5 días siguientes</p></div>
+      <div><i class="fa fa-whatsapp text-rose-500 text-2xl mb-2" aria-hidden="true"></i><p class="font-semibold">Atención por WhatsApp</p><p class="text-gray-500">Respondemos todos los días</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="text-center text-xs text-gray-500 py-6 px-4">© Moda Luna · Página de demostración con datos ficticios</footer>
+
+<!-- CARRITO -->
+<div id="overlay" class="fixed inset-0 bg-black/40 z-50 hidden" data-action="close-cart"></div>
+<aside id="drawer" class="drawer fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col translate-x-full" role="dialog" aria-modal="true" aria-label="Carrito" aria-hidden="true">
+  <div class="flex items-center justify-between p-4 border-b">
+    <h2 id="drawerTitle" class="font-display font-bold text-xl">Tu carrito</h2>
+    <button data-action="close-cart" aria-label="Cerrar" class="w-9 h-9 rounded-full hover:bg-gray-100"><i class="fa fa-times" aria-hidden="true"></i></button>
+  </div>
+  <div id="drawerBody" class="flex-1 overflow-y-auto p-4"></div>
+</aside>
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-ink text-white text-sm px-4 py-2 rounded-full shadow-lg hidden" role="status"></div>
+
+<script>
+/* ===== CONFIG: cambia estos datos para cada cliente ===== */
+const WHATSAPP = '573202318322';   // código de país + número, sin +
+const NEGOCIO = 'Moda Luna';
+const FREE_FROM = 150000, SHIPPING = 8000;
+/* Para usar fotos reales: agrega  img:'url-o-archivo.jpg'  a cada producto y se mostrará en lugar del color con emoji. */
+const PRODUCTOS = [
+  { id:'cam1', n:'Camiseta básica oversize', cat:'Camisetas',   p:45000,  tallas:['S','M','L','XL'],     e:'👕', g:'from-rose-200 to-rose-400' },
+  { id:'cam2', n:'Camiseta estampada',       cat:'Camisetas',   p:52000,  tallas:['S','M','L','XL'],     e:'👚', g:'from-amber-100 to-amber-300' },
+  { id:'jea1', n:'Jean mom fit',             cat:'Pantalones',  p:129000, tallas:['6','8','10','12'],    e:'👖', g:'from-sky-200 to-sky-400' },
+  { id:'car1', n:'Pantalón cargo',           cat:'Pantalones',  p:119000, tallas:['6','8','10','12'],    e:'👖', g:'from-emerald-200 to-emerald-400' },
+  { id:'gor1', n:'Gorra urbana',             cat:'Accesorios',  p:35000,  tallas:['Única'],              e:'🧢', g:'from-violet-200 to-violet-400' },
+  { id:'bol1', n:'Bolso tote',               cat:'Accesorios',  p:68000,  tallas:['Única'],              e:'👜', g:'from-orange-200 to-orange-400' }
+];
+
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const fmt = n => '$ ' + Math.round(n).toLocaleString('es-CO');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch(e){ return d; } }
+function save(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.remove('hidden'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.add('hidden'),1700); }
+
+let cart = load('luna_cart', []);
+let view = 'cart', currentCat = 'Todos';
+
+const qty = () => cart.reduce((a,i) => a + i.qty, 0);
+const subtotal = () => cart.reduce((a,i) => a + i.p * i.qty, 0);
+const envio = () => (cart.length && subtotal() < FREE_FROM) ? SHIPPING : 0;
+const total = () => subtotal() + envio();
+function persist(){ save('luna_cart', cart); $('#cartCount').textContent = qty(); }
+
+/* ===== Catálogo ===== */
+function renderCats(){
+  const cats = ['Todos', ...new Set(PRODUCTOS.map(p => p.cat))];
+  $('#catBar').innerHTML = cats.map(c => `<button data-action="cat" data-cat="${esc(c)}" class="px-3 py-1.5 rounded-full text-sm ${c===currentCat?'bg-rose-500 text-white':'bg-rose-50 text-ink hover:bg-rose-100'}">${esc(c)}</button>`).join('');
+}
+function renderGrid(){
+  renderCats();
+  $('#grid').innerHTML = PRODUCTOS.filter(p => currentCat==='Todos' || p.cat===currentCat).map(p => `
+    <article class="card bg-white border rounded-2xl overflow-hidden" data-id="${p.id}">
+      ${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.n)}" loading="lazy" class="w-full aspect-square object-cover">`
+              : `<div class="aspect-square bg-gradient-to-br ${p.g} flex items-center justify-center text-6xl" role="img" aria-label="${esc(p.n)}">${p.e}</div>`}
+      <div class="p-3">
+        <p class="text-xs text-gray-500">${esc(p.cat)}</p>
+        <h3 class="font-semibold leading-snug">${esc(p.n)}</h3>
+        <p class="font-bold text-rose-500 mt-1">${fmt(p.p)}</p>
+        <label class="sr-only" for="t_${p.id}">Talla</label>
+        <select id="t_${p.id}" class="talla w-full mt-2 p-2 border rounded-lg text-sm">${p.tallas.map(t => `<option>${esc(t)}</option>`).join('')}</select>
+        <button data-action="add" class="w-full mt-2 bg-ink text-white py-2 rounded-lg text-sm font-semibold hover:bg-rose-500">Agregar</button>
+      </div>
+    </article>`).join('');
+}
+
+/* ===== Carrito ===== */
+const isOpen = () => !$('#drawer').classList.contains('translate-x-full');
+function openCart(){ view = 'cart'; renderDrawer(); $('#overlay').classList.remove('hidden'); const d=$('#drawer'); d.classList.remove('translate-x-full'); d.setAttribute('aria-hidden','false'); }
+function closeCart(){ $('#overlay').classList.add('hidden'); const d=$('#drawer'); d.classList.add('translate-x-full'); d.setAttribute('aria-hidden','true'); }
+function renderDrawer(){
+  const body = $('#drawerBody');
+  if(view === 'cart'){
+    $('#drawerTitle').textContent = 'Tu carrito';
+    if(!cart.length){ body.innerHTML = '<p class="text-gray-500 text-center mt-10">Tu carrito está vacío.</p><button data-action="close-cart" class="mt-6 w-full bg-rose-500 text-white py-2.5 rounded-lg font-semibold">Seguir comprando</button>'; return; }
+    const falta = FREE_FROM - subtotal();
+    body.innerHTML = `
+      <ul class="divide-y">${cart.map((i,idx) => `
+        <li class="py-3 flex gap-3 items-center">
+          <div class="w-14 h-14 rounded-lg bg-gradient-to-br ${i.g} flex items-center justify-center text-2xl shrink-0">${i.e}</div>
+          <div class="flex-1 min-w-0"><p class="font-semibold text-sm">${esc(i.n)}</p><p class="text-xs text-gray-500">Talla ${esc(i.talla)}</p><p class="text-sm text-rose-500 font-semibold">${fmt(i.p*i.qty)}</p></div>
+          <div class="flex items-center gap-1.5">
+            <button data-action="qty" data-i="${idx}" data-d="-1" aria-label="Quitar uno" class="w-7 h-7 rounded-full bg-gray-100">−</button>
+            <span class="w-5 text-center text-sm">${i.qty}</span>
+            <button data-action="qty" data-i="${idx}" data-d="1" aria-label="Agregar uno" class="w-7 h-7 rounded-full bg-gray-100">+</button>
+            <button data-action="remove" data-i="${idx}" aria-label="Eliminar" class="w-7 h-7 text-red-400"><i class="fa fa-trash" aria-hidden="true"></i></button>
+          </div>
+        </li>`).join('')}</ul>
+      <p class="mt-3 text-xs ${falta>0?'text-gray-500':'text-green-600 font-semibold'}">${falta>0 ? `Te faltan ${fmt(falta)} para envío gratis.` : '¡Tienes envío gratis!'}</p>
+      <div class="mt-3 space-y-1 text-sm">
+        <div class="flex justify-between"><span>Subtotal</span><span>${fmt(subtotal())}</span></div>
+        <div class="flex justify-between"><span>Envío</span><span>${envio()?fmt(envio()):'Gratis'}</span></div>
+        <div class="flex justify-between font-bold text-lg pt-2 border-t"><span>Total</span><span class="text-rose-500">${fmt(total())}</span></div>
+      </div>
+      <button data-action="checkout" class="mt-5 w-full bg-rose-500 text-white py-3 rounded-lg font-semibold">Continuar</button>
+      <button data-action="clear" class="mt-2 w-full text-sm text-gray-500 py-2">Vaciar carrito</button>`;
+  } else {
+    $('#drawerTitle').textContent = 'Datos de envío';
+    body.innerHTML = `
+      <form id="checkoutForm" class="space-y-3 text-sm" novalidate>
+        <div><label for="f_n" class="block font-medium mb-1">Nombre</label><input id="f_n" autocomplete="name" class="w-full p-2.5 border rounded-lg"></div>
+        <div><label for="f_c" class="block font-medium mb-1">Ciudad</label><input id="f_c" autocomplete="address-level2" class="w-full p-2.5 border rounded-lg"></div>
+        <div><label for="f_d" class="block font-medium mb-1">Dirección</label><input id="f_d" autocomplete="street-address" class="w-full p-2.5 border rounded-lg"></div>
+        <div><label for="f_p" class="block font-medium mb-1">Forma de pago</label>
+          <select id="f_p" class="w-full p-2.5 border rounded-lg"><option>Transferencia</option><option>Contra entrega</option></select></div>
+        <p id="formErr" class="text-red-500 hidden" role="alert"></p>
+        <div class="flex justify-between font-bold text-lg pt-2 border-t"><span>Total</span><span class="text-rose-500">${fmt(total())}</span></div>
+        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold"><i class="fa fa-whatsapp" aria-hidden="true"></i> Enviar pedido por WhatsApp</button>
+        <button type="button" data-action="back" class="w-full text-gray-500 py-2">← Volver al carrito</button>
+      </form>`;
+    const c = load('luna_cliente', {});
+    if(c.n) $('#f_n').value = c.n; if(c.c) $('#f_c').value = c.c; if(c.d) $('#f_d').value = c.d;
+  }
+}
+function submitOrder(e){
+  e.preventDefault();
+  const n = $('#f_n').value.trim(), c = $('#f_c').value.trim(), d = $('#f_d').value.trim(), p = $('#f_p').value;
+  const err = $('#formErr'); err.classList.add('hidden');
+  if(!n || !c || !d){ err.textContent = !n ? 'Escribe tu nombre.' : !c ? 'Escribe tu ciudad.' : 'Escribe tu dirección.'; err.classList.remove('hidden'); return; }
+  save('luna_cliente', { n, c, d });
+  const lines = cart.map(i => `• ${i.qty}x ${i.n} (talla ${i.talla}) — ${fmt(i.p*i.qty)}`);
+  const msg = [`*Pedido – ${NEGOCIO}*`, ...lines, '', `Subtotal: ${fmt(subtotal())}`, `Envío: ${envio()?fmt(envio()):'Gratis'}`, `*Total: ${fmt(total())}*`, '',
+    `Nombre: ${n}`, `Ciudad: ${c}`, `Dirección: ${d}`, `Pago: ${p}`].join('\n');
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+  cart = []; persist(); closeCart(); toast('¡Pedido enviado! Te confirmamos por WhatsApp.');
+}
+
+/* ===== Eventos ===== */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-action]'); if(!b) return;
+  const a = b.dataset.action;
+  if(a === 'open-cart') openCart();
+  else if(a === 'close-cart') closeCart();
+  else if(a === 'cat'){ currentCat = b.dataset.cat; renderGrid(); }
+  else if(a === 'add'){
+    const card = b.closest('[data-id]'), p = PRODUCTOS.find(x => x.id === card.dataset.id), talla = $('.talla', card).value;
+    const found = cart.find(i => i.id === p.id && i.talla === talla);
+    if(found) found.qty++; else cart.push({ id:p.id, n:p.n, p:p.p, e:p.e, g:p.g, talla, qty:1 });
+    persist(); toast('Agregado al carrito');
+  }
+  else if(a === 'qty'){ const i = cart[+b.dataset.i]; i.qty += +b.dataset.d; if(i.qty < 1) cart.splice(+b.dataset.i, 1); persist(); renderDrawer(); }
+  else if(a === 'remove'){ cart.splice(+b.dataset.i, 1); persist(); renderDrawer(); }
+  else if(a === 'clear'){ cart = []; persist(); renderDrawer(); }
+  else if(a === 'checkout'){ view = 'form'; renderDrawer(); }
+  else if(a === 'back'){ view = 'cart'; renderDrawer(); }
+});
+document.addEventListener('submit', e => { if(e.target.id === 'checkoutForm') submitOrder(e); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && isOpen()) closeCart(); });
+
+renderGrid(); persist();
+</script>
+</body>
+</html>

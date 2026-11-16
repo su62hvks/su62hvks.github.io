@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delicias Moro · Sistema de Pedidos</title>
+<meta name="description" content="Pide hamburguesas, papas y bebidas de Delicias Moro con domicilio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = { theme: { extend: { colors: { primary: '#E67E22', secondary: '#2C3E50' }, fontFamily: { sans: ['Inter','system-ui','sans-serif'], display: ['Montserrat','sans-serif'] } } } }
+</script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; font-family:'Inter',sans-serif; }
+.main-wrapper { display:flex; flex-direction:row; width:500vw; height:100vh; height:100dvh; transition:transform .4s ease; }
+.section { width:100vw; height:100vh; height:100dvh; flex-shrink:0; overflow-y:auto; overflow-x:hidden; overscroll-behavior:contain; }
+.nav-dot { transition:all .3s ease; }
+.nav-dot.active { background-color:#E67E22; transform:scale(1.4); }
+.card-hover { transition:all .3s ease; }
+.card-hover:hover { transform:translateY(-5px); box-shadow:0 15px 30px rgba(0,0,0,.1); }
+input[type="radio"], input[type="checkbox"] { accent-color:#E67E22; }
+.section::-webkit-scrollbar { width:4px; }
+.section::-webkit-scrollbar-thumb { background:#ddd; border-radius:2px; }
+.drawer { transition:transform .3s ease; }
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:2px solid #E67E22; outline-offset:2px; }
+@media (prefers-reduced-motion: reduce) { .main-wrapper, .drawer, .card-hover, .nav-dot { transition:none; } }
+</style>
+</head>
+<body class="bg-gray-50 text-secondary">
+
+<header class="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur shadow-sm">
+  <div class="px-4 py-3 flex items-center justify-between">
+    <h1 class="font-display font-bold text-xl text-primary">DELICIAS MORO</h1>
+    <div class="flex items-center gap-3">
+      <button id="prevBtn" aria-label="Sección anterior" class="p-2 w-9 h-9 bg-gray-100 rounded-full hover:bg-orange-50"><i class="fa fa-chevron-left"></i></button>
+      <button id="nextBtn" aria-label="Sección siguiente" class="p-2 w-9 h-9 bg-primary text-white rounded-full"><i class="fa fa-chevron-right"></i></button>
+      <button data-action="open-cart" aria-label="Abrir carrito" class="relative p-2 w-9 h-9 hover:bg-orange-50 rounded-full">
+        <i class="fa fa-shopping-cart"></i>
+        <span id="cartCount" class="absolute -top-1 -right-1 bg-primary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav aria-label="Secciones" class="fixed right-3 top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2">
+  <button class="nav-dot active w-3 h-3 rounded-full bg-gray-300" data-target="0" aria-label="Inicio"></button>
+  <button class="nav-dot w-3 h-3 rounded-full bg-gray-300" data-target="1" aria-label="Menú"></button>
+  <button class="nav-dot w-3 h-3 rounded-full bg-gray-300" data-target="2" aria-label="Promociones"></button>
+  <button class="nav-dot w-3 h-3 rounded-full bg-gray-300" data-target="3" aria-label="Seguimiento"></button>
+  <button class="nav-dot w-3 h-3 rounded-full bg-gray-300" data-target="4" aria-label="Administración"></button>
+</nav>
+
+<main class="main-wrapper" id="mainWrapper">
+
+  <!-- 0 INICIO -->
+  <section class="section flex items-center relative pt-16" aria-label="Inicio">
+    <div class="absolute inset-0"><img src="https://picsum.photos/id/292/1280/720" alt="" class="w-full h-full object-cover"><div class="absolute inset-0 bg-black/50"></div></div>
+    <div class="relative z-10 text-white text-center px-6 max-w-xl mx-auto">
+      <h2 class="font-display font-extrabold text-3xl md:text-5xl mb-6">Sabores que te enamoran</h2>
+      <p class="text-lg mb-8 text-gray-200">📱 En celular: desliza con el dedo<br>💻 En computador: usa las flechas del teclado o los botones de arriba</p>
+      <button data-goto="1" class="bg-primary text-white font-semibold px-8 py-3 rounded-full shadow-lg">Ver Menú →</button>
+    </div>
+  </section>
+
+  <!-- 1 MENU -->
+  <section class="section pt-20 px-4 pb-20 bg-gradient-to-br from-orange-50 to-white" aria-label="Menú">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="font-display font-bold text-2xl mb-2">Nuestro Menú</h2>
+      <p class="text-gray-500 mb-6">Elige y personaliza tu pedido</p>
+      <div class="flex flex-wrap gap-2 mb-6" id="catBar"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="menuGrid"></div>
+    </div>
+  </section>
+
+  <!-- 2 PROMOS -->
+  <section class="section pt-20 px-4 pb-20 bg-gradient-to-br from-yellow-50 to-orange-50" aria-label="Promociones">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-display font-bold text-2xl mb-2">Promociones</h2><p class="text-gray-500 mb-8">Ofertas especiales</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-2xl shadow-md p-6 relative">
+          <div class="absolute top-4 right-4 bg-primary text-white text-sm font-bold px-2 py-1 rounded-full">-15%</div>
+          <h3 class="font-bold text-xl">Combo Clásico</h3>
+          <p class="text-gray-500 text-sm">Hamburguesa + Papas + Gaseosa</p>
+          <p class="text-gray-400 line-through text-sm mt-2">$ 30.000</p>
+          <p class="text-primary font-bold text-lg">$ 25.500</p>
+          <button data-action="add-combo" class="mt-4 w-full bg-primary text-white py-2 rounded-lg">Aprovechar</button>
+        </div>
+        <div class="bg-white rounded-2xl shadow-md p-6">
+          <h3 class="font-bold text-xl">Domicilio Gratis</h3>
+          <p class="text-gray-500 text-sm">En compras de <b>$ 50.000</b> o más. Si no, el domicilio cuesta $ 5.000.</p>
+          <div class="mt-4 h-2 bg-gray-100 rounded-full overflow-hidden"><div id="freeBar" class="h-full bg-primary rounded-full" style="width:0%"></div></div>
+          <p id="freeMsg" class="text-sm text-gray-500 mt-2">Tu carrito está vacío.</p>
+          <button data-goto="1" class="mt-4 w-full bg-primary text-white py-2 rounded-lg">Ver Menú</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 SEGUIMIENTO -->
+  <section class="section pt-20 px-4 pb-20 bg-white" aria-label="Seguimiento">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="font-display font-bold text-2xl mb-6">Estado de tu Pedido</h2>
+      <div id="tracking"></div>
+    </div>
+  </section>
+
+  <!-- 4 ADMIN -->
+  <section class="section pt-20 px-4 pb-20 bg-gray-50" aria-label="Administración">
+    <div class="max-w-4xl mx-auto" id="adminRoot"></div>
+  </section>
+</main>
+
+<!-- CARRITO / CHECKOUT -->
+<div id="overlay" class="fixed inset-0 bg-black/40 z-50 hidden" data-action="close-cart"></div>
+<aside id="drawer" class="drawer fixed top-0 right-0 bottom-0 w-full max-w-md bg-white z-50 shadow-2xl flex flex-col translate-x-full" role="dialog" aria-modal="true" aria-label="Carrito" aria-hidden="true">
+  <div class="flex items-center justify-between p-4 border-b">
+    <h2 id="drawerTitle" class="font-display font-bold text-lg">Tu carrito</h2>
+    <button data-action="close-cart" aria-label="Cerrar" class="w-9 h-9 rounded-full hover:bg-gray-100"><i class="fa fa-times"></i></button>
+  </div>
+  <div id="drawerBody" class="flex-1 overflow-y-auto p-4"></div>
+</aside>
+
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-secondary text-white text-sm px-4 py-2 rounded-full shadow-lg hidden" role="status"></div>
+
+<script>
+/* ========= CONFIG ========= */
+const WHATSAPP = '573202318322';   // Cambia por el número del negocio (código país + número, sin +)
+const ADMIN_PIN = '1234';          // Cambia el PIN. OJO: es solo una barrera visual en el navegador, no seguridad real.
+const FREE_FROM = 50000, DELIVERY_FEE = 5000, COMBO_PRICE = 25500;
+const STATUS = ['Recibido','En preparación','En camino','Entregado'];
+const STATUS_DESC = ['Tu pedido fue recibido','Estamos preparando tu comida','Tu pedido va hacia ti','¡Disfruta tu comida!'];
+
+const DEFAULT_PRODUCTS = [
+  { id:'hamb', nombre:'Hamburguesa Clásica', desc:'Carne, lechuga, tomate, cebolla', precio:18000, cat:'hamburguesa', img:'https://picsum.photos/id/1080/500/300', extras:[{n:'Queso',p:2000},{n:'Tocineta',p:3000}], obs:true, disponible:true },
+  { id:'papas', nombre:'Papas Fritas', desc:'Crujientes y doradas', precio:8000, cat:'papas', img:'https://picsum.photos/id/139/500/300', extras:[{n:'Queso',p:2000}], obs:false, disponible:true },
+  { id:'gas', nombre:'Gaseosa 500ml', desc:'Elige tu sabor', precio:4000, cat:'bebida', img:'https://picsum.photos/id/425/500/300', extras:[], sabores:['Cola','Limonada','Uva'], obs:false, disponible:true }
+];
+const CATS = [['todos','Todos'],['hamburguesa','Hamburguesas'],['papas','Papas'],['bebida','Bebidas'],['otro','Otros']];
+
+/* ========= UTILIDADES ========= */
+const $ = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+const fmt = n => '$ ' + Math.round(n).toLocaleString('es-CO');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function load(k, def){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e){ return def; } }
+function save(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.remove('hidden'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.add('hidden'),1800); }
+const isToday = ts => new Date(ts).toDateString() === new Date().toDateString();
+
+/* ========= ESTADO ========= */
+let customProducts = load('moro_custom', []);
+let stock = load('moro_stock', {});               // id -> false si está agotado
+let cart = load('moro_cart', []);
+let orders = load('moro_orders', []);
+let lastOrderId = load('moro_last', null);
+let mode = 'domicilio';
+let view = 'cart';
+let adminTab = 'pedidos';
+let adminOk = false;
+try { adminOk = sessionStorage.getItem('moro_admin') === '1'; } catch(e){}
+let currentCat = 'todos';
+
+const allProducts = () => [...DEFAULT_PRODUCTS, ...customProducts].map(p => ({...p, disponible: stock[p.id] !== false}));
+
+/* ========= NAVEGACIÓN ========= */
+const wrapper = $('#mainWrapper'), dots = $$('.nav-dot'), sections = $$('.section');
+const totalSections = 5; let currentSection = 0;
+function goToSection(i){
+  if(i < 0 || i >= totalSections) return;
+  currentSection = i;
+  wrapper.style.transform = `translateX(-${i*100}vw)`;
+  dots.forEach((d,k) => d.classList.toggle('active', k===i));
+  sections.forEach((s,k) => { s.inert = k !== i; });
+  if(i === 3) renderTracking();
+  if(i === 4) renderAdmin();
+}
+dots.forEach(d => d.addEventListener('click', () => goToSection(+d.dataset.target)));
+$('#prevBtn').addEventListener('click', () => goToSection(currentSection-1));
+$('#nextBtn').addEventListener('click', () => goToSection(currentSection+1));
+
+// Swipe táctil: solo si el gesto es claramente horizontal y no ocurre sobre un campo de formulario
+let sx=0, sy=0, swipeOk=false;
+wrapper.addEventListener('touchstart', e => { sx=e.touches[0].clientX; sy=e.touches[0].clientY; swipeOk = !e.target.closest('input,textarea,select'); }, {passive:true});
+wrapper.addEventListener('touchend', e => {
+  if(!swipeOk) return;
+  const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  if(Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) goToSection(currentSection + (dx < 0 ? 1 : -1));
+}, {passive:true});
+
+// Flechas del teclado (no cuando se escribe o el carrito está abierto)
+document.addEventListener('keydown', e => {
+  if(e.target.closest('input,textarea,select')) { if(e.key==='Escape') closeCart(); return; }
+  if(e.key === 'Escape') closeCart();
+  if(isDrawerOpen()) return;
+  if(e.key === 'ArrowRight') goToSection(currentSection+1);
+  if(e.key === 'ArrowLeft') goToSection(currentSection-1);
+});
+
+/* ========= MENÚ ========= */
+function renderCats(){
+  const present = new Set(allProducts().map(p => p.cat));
+  $('#catBar').innerHTML = CATS.filter(([k]) => k==='todos' || present.has(k)).map(([k,l]) =>
+    `<button data-action="cat" data-cat="${k}" class="px-3 py-1.5 rounded-full text-sm ${k===currentCat?'bg-primary text-white':'bg-white shadow-sm'}">${l}</button>`).join('');
+}
+function cardHTML(p){
+  const dis = !p.disponible;
+  return `<article class="producto bg-white rounded-2xl shadow-md overflow-hidden card-hover border ${dis?'opacity-60':''}" data-id="${esc(p.id)}">
+    <img src="${esc(p.img||'https://picsum.photos/id/292/500/300')}" alt="${esc(p.nombre)}" loading="lazy" class="w-full h-36 object-cover">
+    <div class="p-4">
+      <h3 class="font-bold text-lg">${esc(p.nombre)}</h3>
+      <p class="text-gray-500 text-sm">${esc(p.desc)}</p>
+      <p class="font-bold text-xl text-primary my-2">${fmt(p.precio)}</p>
+      ${(p.extras||[]).map((x,i)=>`<label class="flex justify-between text-sm py-0.5"><span>${esc(x.n)} (+${fmt(x.p)})</span><input type="checkbox" class="extra" data-i="${i}" ${dis?'disabled':''}></label>`).join('')}
+      ${p.sabores ? `<select class="sabor w-full p-2 border rounded-lg my-2 text-sm" aria-label="Sabor" ${dis?'disabled':''}>${p.sabores.map(s=>`<option>${esc(s)}</option>`).join('')}</select>` : ''}
+      ${p.obs ? `<textarea placeholder="Observaciones..." aria-label="Observaciones" class="obs w-full text-sm p-2 border rounded-lg my-3 h-12 resize-none" ${dis?'disabled':''}></textarea>` : ''}
+      <button data-action="add" ${dis?'disabled':''} class="w-full ${dis?'bg-gray-300':'bg-primary'} text-white py-2 rounded-lg mt-3">${dis?'Agotado':'Agregar'}</button>
+    </div>
+  </article>`;
+}
+function renderMenu(){
+  renderCats();
+  const list = allProducts().filter(p => currentCat==='todos' || p.cat===currentCat);
+  $('#menuGrid').innerHTML = list.length ? list.map(cardHTML).join('') : '<p class="text-gray-500">No hay productos en esta categoría.</p>';
+}
+
+/* ========= CARRITO ========= */
+const cartQty = () => cart.reduce((a,i) => a + i.qty, 0);
+const subtotal = () => cart.reduce((a,i) => a + i.unit * i.qty, 0);
+const delivery = () => (mode==='domicilio' && cart.length && subtotal() < FREE_FROM) ? DELIVERY_FEE : 0;
+const total = () => subtotal() + delivery();
+
+function persistCart(){ save('moro_cart', cart); updateBadge(); updateFreeBar(); }
+function updateBadge(){ $('#cartCount').textContent = cartQty(); }
+function updateFreeBar(){
+  const s = subtotal();
+  $('#freeBar').style.width = Math.min(100, s/FREE_FROM*100) + '%';
+  $('#freeMsg').textContent = !cart.length ? 'Tu carrito está vacío.' : s >= FREE_FROM ? '¡Tienes domicilio gratis! 🎉' : `Te faltan ${fmt(FREE_FROM - s)} para el domicilio gratis.`;
+}
+function pushItem(item){
+  const found = cart.find(i => i.key === item.key);
+  if(found) found.qty += 1; else cart.push({...item, qty:1});
+  persistCart();
+}
+function addFromCard(btn){
+  const card = btn.closest('[data-id]');
+  const p = allProducts().find(x => x.id === card.dataset.id);
+  if(!p || !p.disponible) return;
+  const chosen = $$('.extra:checked', card).map(c => p.extras[+c.dataset.i]);
+  const sabor = $('.sabor', card)?.value || '';
+  const obs = ($('.obs', card)?.value || '').trim();
+  const unit = p.precio + chosen.reduce((a,x) => a + x.p, 0);
+  const detalle = [...chosen.map(x => '+ ' + x.n), sabor].filter(Boolean);
+  pushItem({ key:[p.id, detalle.join(','), obs].join('|'), nombre:p.nombre, detalle, obs, unit });
+  // reiniciar la tarjeta
+  $$('.extra', card).forEach(c => c.checked = false);
+  const ta = $('.obs', card); if(ta) ta.value = '';
+  btn.textContent = '¡Agregado ✓'; setTimeout(() => { if(btn.isConnected) btn.textContent = 'Agregar'; }, 900);
+}
+
+const isDrawerOpen = () => !$('#drawer').classList.contains('translate-x-full');
+function openCart(v='cart'){
+  view = v; renderDrawer();
+  $('#overlay').classList.remove('hidden');
+  const d = $('#drawer'); d.classList.remove('translate-x-full'); d.setAttribute('aria-hidden','false');
+  $('#drawerBody').scrollTop = 0;
+}
+function closeCart(){
+  $('#overlay').classList.add('hidden');
+  const d = $('#drawer'); d.classList.add('translate-x-full'); d.setAttribute('aria-hidden','true');
+}
+function renderDrawer(){
+  const body = $('#drawerBody');
+  if(view === 'cart'){
+    $('#drawerTitle').textContent = 'Tu carrito';
+    if(!cart.length){ body.innerHTML = '<p class="text-gray-500 text-center mt-10">Tu carrito está vacío.</p><button data-action="close-cart" data-goto-after="1" class="mt-6 w-full bg-primary text-white py-2 rounded-lg">Ver menú</button>'; return; }
+    body.innerHTML = `
+      <ul class="divide-y">${cart.map((i,idx) => `
+        <li class="py-3 flex gap-3">
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold">${esc(i.nombre)}</p>
+            ${i.detalle.length ? `<p class="text-xs text-gray-500">${esc(i.detalle.join(' · '))}</p>` : ''}
+            ${i.obs ? `<p class="text-xs text-gray-400 italic">“${esc(i.obs)}”</p>` : ''}
+            <p class="text-sm text-primary font-semibold mt-1">${fmt(i.unit * i.qty)}</p>
+          </div>
+          <div class="flex items-center gap-2 self-center">
+            <button data-action="qty" data-i="${idx}" data-d="-1" aria-label="Quitar uno" class="w-7 h-7 rounded-full bg-gray-100">−</button>
+            <span class="w-5 text-center text-sm">${i.qty}</span>
+            <button data-action="qty" data-i="${idx}" data-d="1" aria-label="Agregar uno" class="w-7 h-7 rounded-full bg-gray-100">+</button>
+            <button data-action="remove" data-i="${idx}" aria-label="Eliminar" class="w-7 h-7 text-red-400"><i class="fa fa-trash"></i></button>
+          </div>
+        </li>`).join('')}</ul>
+      <fieldset class="mt-4 flex gap-4 text-sm">
+        <legend class="sr-only">Tipo de entrega</legend>
+        <label class="flex items-center gap-2"><input type="radio" name="modo" value="domicilio" ${mode==='domicilio'?'checked':''}> Domicilio</label>
+        <label class="flex items-center gap-2"><input type="radio" name="modo" value="recoger" ${mode==='recoger'?'checked':''}> Recoger en tienda</label>
+      </fieldset>
+      <div class="mt-4 space-y-1 text-sm">
+        <div class="flex justify-between"><span>Subtotal</span><span>${fmt(subtotal())}</span></div>
+        <div class="flex justify-between"><span>Domicilio</span><span>${mode==='recoger' ? '—' : delivery() ? fmt(delivery()) : 'Gratis'}</span></div>
+        <div class="flex justify-between font-bold text-lg pt-2 border-t"><span>Total</span><span class="text-primary">${fmt(total())}</span></div>
+      </div>
+      <button data-action="checkout" class="mt-5 w-full bg-primary text-white py-3 rounded-lg font-semibold">Continuar</button>
+      <button data-action="clear" class="mt-2 w-full text-sm text-gray-500 py-2">Vaciar carrito</button>`;
+  } else {
+    $('#drawerTitle').textContent = 'Tus datos';
+    body.innerHTML = `
+      <form id="checkoutForm" class="space-y-3 text-sm" novalidate>
+        <div><label class="block font-medium mb-1" for="f_nombre">Nombre</label><input id="f_nombre" required autocomplete="name" class="w-full p-2 border rounded-lg"></div>
+        <div><label class="block font-medium mb-1" for="f_tel">Teléfono / WhatsApp</label><input id="f_tel" required inputmode="tel" autocomplete="tel" class="w-full p-2 border rounded-lg"></div>
+        ${mode==='domicilio' ? `<div><label class="block font-medium mb-1" for="f_dir">Dirección de entrega</label><input id="f_dir" required autocomplete="street-address" class="w-full p-2 border rounded-lg"></div>` : '<p class="text-gray-500">Recogerás tu pedido en el local.</p>'}
+        <div><label class="block font-medium mb-1" for="f_pago">Forma de pago</label>
+          <select id="f_pago" class="w-full p-2 border rounded-lg"><option>Efectivo</option><option>Transferencia</option></select></div>
+        <div><label class="block font-medium mb-1" for="f_notas">Notas (opcional)</label><textarea id="f_notas" class="w-full p-2 border rounded-lg h-16 resize-none"></textarea></div>
+        <p id="formErr" class="text-red-500 hidden" role="alert"></p>
+        <div class="flex justify-between font-bold text-lg pt-2 border-t"><span>Total a pagar</span><span class="text-primary">${fmt(total())}</span></div>
+        <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold"><i class="fa fa-whatsapp"></i> Confirmar y enviar por WhatsApp</button>
+        <button type="button" data-action="back-cart" class="w-full text-gray-500 py-2">← Volver al carrito</button>
+      </form>`;
+    const saved = load('moro_cliente', {});
+    if(saved.nombre) $('#f_nombre').value = saved.nombre;
+    if(saved.tel) $('#f_tel').value = saved.tel;
+    if(saved.dir && $('#f_dir')) $('#f_dir').value = saved.dir;
+  }
+}
+function submitOrder(e){
+  e.preventDefault();
+  const nombre = $('#f_nombre').value.trim(), tel = $('#f_tel').value.trim();
+  const dir = $('#f_dir') ? $('#f_dir').value.trim() : '';
+  const err = $('#formErr'); err.classList.add('hidden');
+  const digits = tel.replace(/\D/g,'');
+  if(!nombre || digits.length < 7 || (mode==='domicilio' && !dir)){
+    err.textContent = !nombre ? 'Escribe tu nombre.' : digits.length < 7 ? 'Escribe un teléfono válido.' : 'Escribe la dirección de entrega.';
+    err.classList.remove('hidden'); return;
+  }
+  const order = {
+    id: (orders.reduce((m,o) => Math.max(m,o.id), 1000) + 1),
+    ts: Date.now(), items: cart.map(i => ({...i})), subtotal: subtotal(), envio: delivery(), total: total(),
+    modo: mode, nombre, tel, dir, pago: $('#f_pago').value, notas: $('#f_notas').value.trim(),
+    status: 0, cancelado: false
+  };
+  orders.push(order); save('moro_orders', orders);
+  save('moro_cliente', { nombre, tel, dir });
+  lastOrderId = order.id; save('moro_last', lastOrderId);
+
+  const lines = order.items.map(i => `• ${i.qty}x ${i.nombre}${i.detalle.length ? ' (' + i.detalle.join(', ') + ')' : ''}${i.obs ? ' – ' + i.obs : ''} — ${fmt(i.unit*i.qty)}`);
+  const msg = [`*Pedido #${order.id} – Delicias Moro*`, ...lines, '',
+    `Subtotal: ${fmt(order.subtotal)}`, `Domicilio: ${order.modo==='recoger' ? 'Recoge en tienda' : order.envio ? fmt(order.envio) : 'Gratis'}`, `*Total: ${fmt(order.total)}*`, '',
+    `Nombre: ${nombre}`, `Tel: ${tel}`, order.modo==='domicilio' ? `Dirección: ${dir}` : 'Recoge en tienda', `Pago: ${order.pago}`, order.notas ? `Notas: ${order.notas}` : ''].filter(l => l !== undefined).join('\n');
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+
+  cart = []; persistCart(); closeCart(); goToSection(3); toast('¡Pedido #' + order.id + ' registrado!');
+}
+
+/* ========= SEGUIMIENTO ========= */
+function renderTracking(){
+  const o = orders.find(x => x.id === lastOrderId);
+  const box = $('#tracking');
+  if(!o){ box.innerHTML = `<div class="bg-orange-50 p-4 rounded-xl text-sm">Aún no has hecho un pedido. <button data-goto="1" class="text-primary font-semibold underline">Ir al menú</button></div>`; return; }
+  const steps = o.cancelado ? '<div class="p-4 bg-red-50 border border-red-200 rounded-xl font-semibold text-red-600">Este pedido fue cancelado.</div>' :
+    `<div class="space-y-3">${STATUS.map((s,i) => {
+      const done = i < o.status, cur = i === o.status, last = o.status === 3 && i === 3;
+      const on = done || last;
+      return `<div class="flex items-center gap-4 p-4 rounded-xl border ${on?'bg-green-50 border-green-200':cur?'bg-orange-50 border-orange-200':'bg-gray-50 opacity-50 border-transparent'}">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white ${on?'bg-green-500':cur?'bg-primary':'bg-gray-300'}">${on?'✓':i+1}</div>
+        <div><p class="font-bold">${s}</p><p class="text-sm text-gray-500">${STATUS_DESC[i]}</p></div></div>`; }).join('')}</div>`;
+  box.innerHTML = `<p class="text-sm text-gray-500 mb-3">Pedido #${o.id} · ${new Date(o.ts).toLocaleString('es-CO')}</p>${steps}
+    <div class="mt-6 bg-orange-50 p-4 rounded-xl text-sm space-y-1">
+      ${o.items.map(i => `<div class="flex justify-between"><span>${i.qty}x ${esc(i.nombre)}${i.detalle.length ? ' <span class="text-gray-500">(' + esc(i.detalle.join(', ')) + ')</span>' : ''}</span><span>${fmt(i.unit*i.qty)}</span></div>`).join('')}
+      <div class="flex justify-between pt-2 border-t"><span>Domicilio</span><span>${o.modo==='recoger' ? 'Recoge en tienda' : o.envio ? fmt(o.envio) : 'Gratis'}</span></div>
+      <div class="flex justify-between font-bold"><span>Total</span><span>${fmt(o.total)}</span></div>
+    </div>`;
+}
+
+/* ========= ADMIN ========= */
+function renderAdmin(){
+  const root = $('#adminRoot');
+  if(!adminOk){
+    root.innerHTML = `<h2 class="font-display font-bold text-2xl mb-6">Panel de Administración</h2>
+      <form id="pinForm" class="bg-white p-6 rounded-xl shadow-sm max-w-xs">
+        <label for="pin" class="block text-sm font-medium mb-2">PIN de acceso</label>
+        <input id="pin" type="password" inputmode="numeric" autocomplete="off" class="w-full p-2 border rounded-lg mb-3">
+        <p id="pinErr" class="text-red-500 text-sm hidden mb-2">PIN incorrecto</p>
+        <button class="w-full bg-primary text-white py-2 rounded-lg">Entrar</button>
+      </form>`;
+    return;
+  }
+  const valid = orders.filter(o => !o.cancelado);
+  const hoy = valid.filter(o => isToday(o.ts));
+  const clientes = new Set(valid.map(o => o.tel.replace(/\D/g,''))).size;
+  const stat = (l,v) => `<div class="bg-white p-4 rounded-xl shadow-sm text-center"><p class="text-gray-500 text-sm">${l}</p><p class="font-bold text-2xl ${l==='Ventas hoy'?'text-primary':''}">${v}</p></div>`;
+  let content = '';
+  if(adminTab === 'pedidos'){
+    const list = [...orders].reverse();
+    content = list.length ? `<div class="space-y-3">${list.map(o => `
+      <div class="bg-white p-4 rounded-xl shadow-sm text-sm ${o.cancelado?'opacity-60':''}">
+        <div class="flex justify-between items-start gap-2">
+          <div><p class="font-bold">#${o.id} · ${esc(o.nombre)}</p><p class="text-gray-500">${new Date(o.ts).toLocaleString('es-CO')} · ${esc(o.tel)}</p>
+          <p class="text-gray-500">${o.modo==='recoger' ? 'Recoge en tienda' : esc(o.dir)} · ${esc(o.pago)}</p></div>
+          <p class="font-bold text-primary">${fmt(o.total)}</p></div>
+        <p class="mt-2">${o.items.map(i => `${i.qty}x ${esc(i.nombre)}`).join(', ')}</p>
+        ${o.notas ? `<p class="text-gray-500 italic">“${esc(o.notas)}”</p>` : ''}
+        <div class="flex items-center gap-2 mt-3">
+          ${o.cancelado ? '<span class="text-red-500 font-semibold">Cancelado</span>' : `
+          <select data-action="status" data-id="${o.id}" aria-label="Estado del pedido ${o.id}" class="border rounded-lg p-1.5 flex-1">${STATUS.map((s,i)=>`<option value="${i}" ${o.status===i?'selected':''}>${s}</option>`).join('')}</select>
+          <button data-action="cancel-order" data-id="${o.id}" class="px-3 py-1.5 border border-red-200 text-red-500 rounded-lg">Cancelar</button>`}
+        </div></div>`).join('')}</div>` : '<p class="text-gray-500">Todavía no hay pedidos.</p>';
+  } else {
+    const prods = allProducts();
+    content = `<div class="bg-white p-4 rounded-xl shadow-sm mb-4"><h3 class="font-bold mb-3">Inventario</h3><ul class="divide-y text-sm">${prods.map(p => `
+      <li class="py-2 flex items-center justify-between gap-2"><span>${esc(p.nombre)} <span class="text-gray-400">· ${fmt(p.precio)}</span></span>
+      <span class="flex gap-2">
+        <button data-action="toggle-stock" data-id="${esc(p.id)}" class="px-3 py-1 rounded-lg border ${p.disponible?'text-green-600 border-green-200':'text-red-500 border-red-200'}">${p.disponible?'Disponible':'Agotado'}</button>
+        ${customProducts.some(c=>c.id===p.id) ? `<button data-action="del-product" data-id="${esc(p.id)}" aria-label="Eliminar ${esc(p.nombre)}" class="px-2 text-red-400"><i class="fa fa-trash"></i></button>` : ''}
+      </span></li>`).join('')}</ul></div>
+      <form id="productForm" class="bg-white p-4 rounded-xl shadow-sm text-sm grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <h3 class="font-bold sm:col-span-2">Agregar producto</h3>
+        <input id="p_nombre" placeholder="Nombre" required class="p-2 border rounded-lg">
+        <input id="p_precio" type="number" min="0" step="500" placeholder="Precio (COP)" required class="p-2 border rounded-lg">
+        <select id="p_cat" aria-label="Categoría" class="p-2 border rounded-lg"><option value="hamburguesa">Hamburguesa</option><option value="papas">Papas</option><option value="bebida">Bebida</option><option value="otro">Otro</option></select>
+        <input id="p_img" type="url" placeholder="URL de imagen (opcional)" class="p-2 border rounded-lg">
+        <input id="p_desc" placeholder="Descripción" class="p-2 border rounded-lg sm:col-span-2">
+        <button class="bg-primary text-white py-2 rounded-lg sm:col-span-2">Guardar producto</button>
+      </form>`;
+  }
+  root.innerHTML = `
+    <div class="flex items-center justify-between mb-6"><h2 class="font-display font-bold text-2xl">Panel de Administración</h2><button data-action="logout" class="text-sm text-gray-500">Salir</button></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      ${stat('Ventas hoy', fmt(hoy.reduce((a,o)=>a+o.total,0)))}${stat('Pedidos hoy', hoy.length)}${stat('Productos', allProducts().length)}${stat('Clientes', clientes)}
+    </div>
+    <div class="flex gap-2 mb-4">
+      <button data-action="tab" data-tab="pedidos" class="px-4 py-2 rounded-lg text-sm ${adminTab==='pedidos'?'bg-primary text-white':'bg-white shadow-sm'}">Pedidos</button>
+      <button data-action="tab" data-tab="productos" class="px-4 py-2 rounded-lg text-sm ${adminTab==='productos'?'bg-primary text-white':'bg-white shadow-sm'}">Productos e inventario</button>
+    </div>${content}`;
+}
+
+/* ========= EVENTOS ========= */
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]'); if(g){ closeCart(); goToSection(+g.dataset.goto); return; }
+  const b = e.target.closest('[data-action]'); if(!b) return;
+  const a = b.dataset.action;
+  if(a === 'open-cart') openCart('cart');
+  else if(a === 'close-cart'){ closeCart(); if(b.dataset.gotoAfter) goToSection(+b.dataset.gotoAfter); }
+  else if(a === 'cat'){ currentCat = b.dataset.cat; renderMenu(); }
+  else if(a === 'add') addFromCard(b);
+  else if(a === 'add-combo'){ pushItem({ key:'combo', nombre:'Combo Clásico', detalle:['Hamburguesa + Papas + Gaseosa'], obs:'', unit:COMBO_PRICE }); toast('Combo agregado al carrito'); }
+  else if(a === 'qty'){ const i = cart[+b.dataset.i]; i.qty += +b.dataset.d; if(i.qty < 1) cart.splice(+b.dataset.i,1); persistCart(); renderDrawer(); }
+  else if(a === 'remove'){ cart.splice(+b.dataset.i,1); persistCart(); renderDrawer(); }
+  else if(a === 'clear'){ cart = []; persistCart(); renderDrawer(); }
+  else if(a === 'checkout'){ view = 'form'; renderDrawer(); }
+  else if(a === 'back-cart'){ view = 'cart'; renderDrawer(); }
+  else if(a === 'tab'){ adminTab = b.dataset.tab; renderAdmin(); }
+  else if(a === 'logout'){ adminOk = false; try{ sessionStorage.removeItem('moro_admin'); }catch(e){} renderAdmin(); }
+  else if(a === 'cancel-order'){ if(confirm('¿Cancelar este pedido?')){ const o = orders.find(x => x.id === +b.dataset.id); o.cancelado = true; save('moro_orders', orders); renderAdmin(); } }
+  else if(a === 'toggle-stock'){ const id = b.dataset.id; stock[id] = stock[id] === false ? true : false; save('moro_stock', stock); renderAdmin(); renderMenu(); }
+  else if(a === 'del-product'){ if(confirm('¿Eliminar este producto?')){ customProducts = customProducts.filter(p => p.id !== b.dataset.id); save('moro_custom', customProducts); renderAdmin(); renderMenu(); } }
+});
+document.addEventListener('change', e => {
+  if(e.target.name === 'modo'){ mode = e.target.value; renderDrawer(); }
+  if(e.target.dataset.action === 'status'){ const o = orders.find(x => x.id === +e.target.dataset.id); o.status = +e.target.value; save('moro_orders', orders); }
+});
+document.addEventListener('submit', e => {
+  if(e.target.id === 'checkoutForm') submitOrder(e);
+  else if(e.target.id === 'pinForm'){
+    e.preventDefault();
+    if($('#pin').value === ADMIN_PIN){ adminOk = true; try{ sessionStorage.setItem('moro_admin','1'); }catch(err){} renderAdmin(); }
+    else $('#pinErr').classList.remove('hidden');
+  } else if(e.target.id === 'productForm'){
+    e.preventDefault();
+    const nombre = $('#p_nombre').value.trim(), precio = parseInt($('#p_precio').value, 10);
+    if(!nombre || isNaN(precio) || precio < 0) return;
+    customProducts.push({ id:'c' + Date.now(), nombre, desc:$('#p_desc').value.trim(), precio, cat:$('#p_cat').value, img:$('#p_img').value.trim(), extras:[], obs:true });
+    save('moro_custom', customProducts); renderAdmin(); renderMenu(); toast('Producto agregado');
+  }
+});
+// Si el admin cambia el estado en otra pestaña, el cliente lo ve actualizado
+window.addEventListener('storage', e => { if(e.key === 'moro_orders'){ orders = load('moro_orders', []); if(currentSection === 3) renderTracking(); if(currentSection === 4) renderAdmin(); } });
+
+/* ========= INICIO ========= */
+renderMenu(); updateBadge(); updateFreeBar(); goToSection(0);
+</script>
+</body>
+</html>
